@@ -2,6 +2,9 @@
     <div class="page-container">
         <Navbar />
         <Homepage />
+        <p v-for="note in notes" :key="note.id">
+            <b>- {{note.description}}</b>
+        </p>
     </div>
     <Footer />
 </template>
@@ -10,14 +13,35 @@
 import Navbar from "@/components/AppNavbar.vue";
 import Homepage from "@/components/AppHomepage.vue";
 import Footer from "@/components/AppFooter.vue";
-
+import axios from 'axios';
+const API_URL = "http://localhost:5038/";
 
 export default {
-    name: 'App',
+    name: 'ExamenPortfolio',
     components: {
         Navbar,
         Homepage,
         Footer
+    },
+    data() {
+        return {
+            title:"Todo App",
+            notes:[]
+        }
+    },
+    methods: {
+        async refreshData() {
+            try {
+                const response = await axios.get(API_URL + "api/examenportfolio/get-notes");
+                this.notes = response.data;
+                console.log(response.data);
+            } catch (error) {
+                console.error("Error fetching notes:", error);
+            }
+        }
+    },
+    mounted() {
+        this.refreshData();
     }
 }
 </script>

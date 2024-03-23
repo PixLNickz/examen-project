@@ -32,7 +32,7 @@ app.listen(5038, () => {
         });
 });
 
-app.get("api/examenportfolio/get-notes", async (request, response) => {
+app.get("/api/examenportfolio/get-notes", async (request, response) => {
     try {
         const result = await database.collection("examenportfoliocollection").find({}).toArray();
         response.send(result);
@@ -42,19 +42,31 @@ app.get("api/examenportfolio/get-notes", async (request, response) => {
     }
 });
 
-app.post("/api/examenportfolio/add-notes",multer().none(),(request,response)=>{
-    database.collection().count({},function(error,numOfDocs){
+app.post("/api/examenportfolio/add-notes", multer().none(), (request, response) => {
+    database.collection("examenportfoliocollection").countDocuments({}, function (error, numOfDocs) {
         database.collection("examenportfoliocollection").insertOne({
-            id:(numOfDocs+1).toString(),
-            description:request.body.newNotes
+            id: (numOfDocs + 1).toString(),
+            description: request.body.newNotes
+        }, (error, result) => {
+            if (error) {
+                console.error("Error adding note:", error);
+                response.status(500).send("Internal Server Error");
+            } else {
+                response.json("Added Successfully");
+            }
         });
-        response.json("Added Successfully")
     });
-})
+});
 
-app.delete('/api/examenportfolio/delete-notes',(request,response)=>{
+app.delete('/api/examenportfolio/delete-notes', (request, response) => {
     database.collection("examenportfoliocollection").deleteOne({
-        id:request.query.id
+        id: request.query.id
+    }, (error, result) => {
+        if (error) {
+            console.error("Error deleting note:", error);
+            response.status(500).send("Internal Server Error");
+        } else {
+            response.json("Deleted Successfully");
+        }
     });
-    response.json("Deleted Successfully")
-})
+});
