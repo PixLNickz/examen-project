@@ -26,30 +26,23 @@
         <div class="rectangle-list-container">
             <div class="list-container">
                 <!-- First list -->
-                <div class="rectangle-list">
-                    <ListComponent />
-                    <ListComponent />
-                    <ListComponent />
+                <div class="rectangle-list" v-for="note in getListOne" :key="note.id">
+                    <ListComponent :title="note.TaskTitle"/>
                 </div>
 
                 <!-- Line between lists -->
                 <div class="list-divider"></div>
-
                 <!-- Second list -->
-                <div class="rectangle-list">
-                    <ListComponent />
-                    <ListComponent />
-                    <ListComponent />
+                <div class="rectangle-list" v-for="note in getListTwo" :key="note.id">
+                    <ListComponent :title="note.TaskTitle"/>
                 </div>
 
                 <!-- Line between lists -->
                 <div class="list-divider"></div>
 
                 <!-- Third list -->
-                <div class="rectangle-list">
-                    <ListComponent />
-                    <ListComponent />
-                    <ListComponent />
+                <div class="rectangle-list" v-for="note in getListThree" :key="note.id">
+                    <ListComponent :title="note.TaskTitle"/>
                 </div>
             </div>
         </div>
@@ -60,6 +53,39 @@
 
 </style>
 
-<script setup>
+<script>
 import ListComponent from "@/components/AppListComponent.vue";
+
+export default {
+    name: 'AppHomepage',
+    props: {
+        notes: Object
+    },
+    components: {
+        ListComponent
+    },
+    data() {
+        return {
+            list1: [],
+            list2: [],
+            list3: []
+        }
+    },
+    mounted() {
+        console.log(this.notes);
+    },
+    computed: {
+        getListOne() {
+            return this.notes.filter((note)=>note.TaskList===1)
+        },
+        getListTwo() {
+            return this.notes.filter((note)=>note.TaskList===2)
+        },
+        getListThree() {
+            return this.notes.filter((note)=>note.TaskList===3)
+        }
+    }
+
+}
+
 </script>

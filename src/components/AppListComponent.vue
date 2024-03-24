@@ -1,9 +1,15 @@
-<script setup>
+<script>
+export default {
+    name: 'AppListComponent',
+    props: {
+        title: String
+    }
+}
 
 </script>
 
 <template>
-    <div class="list-item">An Item</div>
+    <div class="list-item">{{ title }}</div>
 </template>
 
 <style scoped>
