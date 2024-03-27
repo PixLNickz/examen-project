@@ -64,24 +64,34 @@ const API_URL = "http://localhost:5038/";
 
 export default {
     name: 'AppHomepage',
-    props: {
-        notes: Object
-    },
+    // props: {
+    //     notes: Object
+    // },
     components: {
         ListComponent
     },
     data() {
         return {
-            newNotes: ''
+            newNotes: '',
+            notes: []
         }
     },
     methods: {
+        async refreshData() {
+            try {
+                const response = await axios.get(API_URL + "api/examenportfolio/get-notes");
+                this.notes = response.data;
+                // console.log(response.data);
+                // console.log(response);
+            } catch (error) {
+                console.error("Error fetching notes:", error);
+            }
+        },
         addNotes() {
             // Send a request to your API endpoint with the newNotes data
             axios.post(API_URL + "api/examenportfolio/add-notes", { newNotes: this.newNotes })
                 .then(response => {
                     console.log(response.data); // Log the response from the server
-                    // Optionally, you can reset the newNotes input field after successfully adding notes
                     this.newNotes = '';
                 })
                 .catch(error => {
@@ -90,6 +100,7 @@ export default {
         }
     },
     mounted() {
+        this.refreshData();
         // console.log(this.notes);
     },
     computed: {
