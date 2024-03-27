@@ -2,10 +2,6 @@
     <div class="page-container">
         <Navbar />
         <Homepage :notes="notes"/>
-<!--        <p v-for="note in notes" :key="note.id">-->
-<!--            &lt;!&ndash;<b>- {{note.TaskTitle}} <br> {{note.TaskContent}} <br> {{note.TaskList}} <br></b> &ndash;&gt;-->
-<!--            <ListComponent :title="note.TaskTitle" />-->
-<!--        </p>-->
     </div>
     <Footer />
 </template>
@@ -15,7 +11,6 @@ import Navbar from "@/components/AppNavbar.vue";
 import Homepage from "@/components/AppHomepage.vue";
 import Footer from "@/components/AppFooter.vue";
 import axios from 'axios';
-//import ListComponent from "@/components/AppListComponent.vue";
 const API_URL = "http://localhost:5038/";
 
 export default {
@@ -36,7 +31,8 @@ export default {
             try {
                 const response = await axios.get(API_URL + "api/examenportfolio/get-notes");
                 this.notes = response.data;
-                console.log(response.data);
+                // console.log(response.data);
+                // console.log(response);
             } catch (error) {
                 console.error("Error fetching notes:", error);
             }

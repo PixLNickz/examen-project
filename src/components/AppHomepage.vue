@@ -1,50 +1,51 @@
 <template>
     <div class="homepage">
-        <!-- Title -->
         <h1 class="title">Titel lijst</h1>
 
-        <!-- Three rectangles items next to each other -->
         <div class="rectangle-container">
             <div class="rectangle-item">
-                <span class="number">5</span>
+                <span class="number">{{ getListOne.length }}</span>
                 To-Do
-                <span class="dot" style="background-color: #00A;"></span>
+                <span class="dot" style="background-color: #00A"></span>
             </div>
             <div class="rectangle-item">
-                <span class="number">5</span>
+                <span class="number">{{ getListTwo.length }}</span>
                 In Progress
-                <span class="dot" style="background-color: #A60;"></span>
+                <span class="dot" style="background-color: #A60"></span>
             </div>
             <div class="rectangle-item">
-                <span class="number">5</span>
+                <span class="number">{{ getListThree.length }}</span>
                 Finished
                 <span class="dot" style="background-color: #0A0"></span>
             </div>
         </div>
 
-        <!-- Bigger item below -->
         <div class="rectangle-list-container">
             <div class="list-container">
-                <!-- First list -->
-                <div class="rectangle-list" v-for="note in getListOne" :key="note.id">
-                    <ListComponent :title="note.TaskTitle"/>
+                <div class="rectangle-list">
+                    <ListComponent v-for="note in getListOne" :key="note.id" :title="note.TaskTitle" :color="note.TaskColor"/>
                 </div>
 
-                <!-- Line between lists -->
                 <div class="list-divider"></div>
-                <!-- Second list -->
-                <div class="rectangle-list" v-for="note in getListTwo" :key="note.id">
-                    <ListComponent :title="note.TaskTitle"/>
+
+                <div class="rectangle-list">
+                    <ListComponent v-for="note in getListTwo" :key="note.id" :title="note.TaskTitle" :color="note.TaskColor"/>
                 </div>
 
-                <!-- Line between lists -->
                 <div class="list-divider"></div>
 
-                <!-- Third list -->
-                <div class="rectangle-list" v-for="note in getListThree" :key="note.id">
-                    <ListComponent :title="note.TaskTitle"/>
+                <div class="rectangle-list">
+                    <ListComponent v-for="note in getListThree" :key="note.id" :title="note.TaskTitle" :color="note.TaskColor"/>
                 </div>
             </div>
+        </div>
+        <div>
+            <form>
+                <!-- other form elements -->
+                <input type="text" id="newNotesInput" v-model="newNotes" placeholder="Enter notes">
+                <button type="button" id="submitButton" @click="addNotes">Submit</button>
+            </form>
+
         </div>
     </div>
 </template>
@@ -55,6 +56,11 @@
 
 <script>
 import ListComponent from "@/components/AppListComponent.vue";
+import axios from 'axios';
+axios.defaults.headers.common = {
+    "Content-Type": "application/json"
+}
+const API_URL = "http://localhost:5038/";
 
 export default {
     name: 'AppHomepage',
@@ -66,13 +72,25 @@ export default {
     },
     data() {
         return {
-            list1: [],
-            list2: [],
-            list3: []
+            newNotes: ''
+        }
+    },
+    methods: {
+        addNotes() {
+            // Send a request to your API endpoint with the newNotes data
+            axios.post(API_URL + "api/examenportfolio/add-notes", { newNotes: this.newNotes })
+                .then(response => {
+                    console.log(response.data); // Log the response from the server
+                    // Optionally, you can reset the newNotes input field after successfully adding notes
+                    this.newNotes = '';
+                })
+                .catch(error => {
+                    console.error('Error adding notes:', error);
+                });
         }
     },
     mounted() {
-        console.log(this.notes);
+        // console.log(this.notes);
     },
     computed: {
         getListOne() {
@@ -85,7 +103,6 @@ export default {
             return this.notes.filter((note)=>note.TaskList===3)
         }
     }
-
 }
 
 </script>
