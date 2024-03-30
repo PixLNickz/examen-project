@@ -14,9 +14,9 @@
     <nav class="navbar">
         <div class="navbar-container">
             <div class="navbar-logo">
-                <a href="/">
+                <router-link to="/">
                     <img class="navbar-logo-img" src="../assets/logo.png" alt="">
-                </a>
+                </router-link>
             </div>
             <div class="navbar-menu">
                 <!-- Hamburger Icon -->
@@ -28,7 +28,7 @@
                 <!-- Menu Items -->
                 <div class="menu-dropdown" :class="{ 'is-active': isMenuOpen }">
                     <div class="navbar-end">
-                        <a href="#">Dashboard</a>
+                        <router-link to="/admin-dashboard">Dashboard</router-link>
                         <a href="#">Owner's dashboard</a>
                         <a href="#">Login</a>
                     </div>

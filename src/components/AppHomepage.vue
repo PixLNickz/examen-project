@@ -64,11 +64,8 @@ const API_URL = "http://localhost:5038/";
 
 export default {
     name: 'AppHomepage',
-    // props: {
-    //     notes: Object
-    // },
     components: {
-        ListComponent
+        ListComponent,
     },
     data() {
         return {
@@ -88,10 +85,10 @@ export default {
             }
         },
         addNotes() {
-            // Send a request to your API endpoint with the newNotes data
+            // send request
             axios.post(API_URL + "api/examenportfolio/add-notes", { newNotes: this.newNotes })
                 .then(response => {
-                    console.log(response.data); // Log the response from the server
+                    console.log(response.data);
                     this.newNotes = '';
                 })
                 .catch(error => {

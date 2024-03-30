@@ -1,7 +1,6 @@
 <template>
     <div class="page-container">
         <Navbar />
-<!--        <Homepage :notes="notes"/>-->
         <router-view></router-view>
     </div>
     <Footer />
@@ -9,7 +8,6 @@
 
 <script>
 import Navbar from "@/components/AppNavbar.vue";
-// import Homepage from "@/components/AppHomepage.vue";
 import Footer from "@/components/AppFooter.vue";
 import axios from 'axios';
 const API_URL = "http://localhost:5038/";
@@ -18,7 +16,6 @@ export default {
     name: 'ExamenPortfolio',
     components: {
         Navbar,
-        // Homepage,
         Footer
     },
     data() {
