@@ -1,6 +1,7 @@
 const express = require("express");
 const MongoClient = require("mongodb").MongoClient;
 const cors = require("cors");
+const {ObjectId} = require("mongodb");
 
 const app = express();
 
@@ -72,4 +73,20 @@ app.delete('/api/examenportfolio/delete-notes', (request, response) => {
             response.json("Deleted Successfully");
         }
     });
+});
+
+app.put('/api/examenportfolio/edit-notes', async (request, response) => {
+    try {
+        const {TaskId, TaskList} = request.body;
+
+        await database.collection("examenportfoliocollection").updateOne(
+            { TaskId: TaskId },
+            { $set: { TaskList: TaskList } }
+        );
+        response.json("Task edited successfully");
+        console.log("Task edited successfully");
+    } catch (error) {
+
+    }
+
 });

@@ -63,11 +63,6 @@ export default {
         return {
             newNotes: '',
             notes: [],
-            items: [
-                { id: 0, title: 'Item A', list: 1},
-                { id: 1, title: 'Item B', list: 1},
-                { id: 2, title: 'Item C', list: 2}
-            ]
         }
     },
     methods: {
@@ -80,18 +75,22 @@ export default {
             }
         },
         startDrag(event, task) {
-            console.log(task);
             event.dataTransfer.dropEffect = 'move';
             event.dataTransfer.effectAllowed = 'move';
             event.dataTransfer.setData('taskID', task.TaskId)
         },
         onDrop(event, list) {
             const taskID = event.dataTransfer.getData('taskID');
-            const task = this.notes.find((task) => task.TaskId === parseInt(taskID))
+            const task = this.notes.find((task) => task.TaskId === parseInt(taskID));
             if (task) {
-                task.TaskList = list;
-                console.log(this.notes)
-                // console.log(item.list)
+                axios.put(API_URL + "api/examenportfolio/edit-notes", { TaskId: task.TaskId, TaskList: list })
+                    .then(response => {
+                        console.log(response.data);
+                        this.refreshData();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
             } else {
                 console.error(`Item with ID ${taskID} not found.`);
             }
@@ -102,9 +101,6 @@ export default {
         // console.log(this.notes);
     },
     computed: {
-        getList() {
-            return (list) => this.items.filter((item)=>item.list === list)
-        },
         getListOne() {
             return this.notes.filter((note)=>note.TaskList === 1)
         },
