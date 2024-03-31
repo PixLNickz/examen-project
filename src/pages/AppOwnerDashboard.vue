@@ -1,5 +1,5 @@
 <template>
-    <div class="table-container">
+    <div class="ownerpage-container">
         <table>
             <thead>
             <tr>
@@ -8,6 +8,7 @@
                 <th>TaskContent</th>
                 <th>TaskTitle</th>
                 <th>TaskProgress</th>
+                <th>TaskPriority</th>
                 <th>Actions</th> <!-- New column for actions -->
             </tr>
             </thead>
@@ -18,6 +19,7 @@
                 <td>{{ note.TaskContent }}</td>
                 <td>{{ note.TaskTitle }}</td>
                 <td>{{ note.TaskProgress }}</td>
+                <td>{{ note.TaskPriority }}</td>
                 <td>
                     <button @click="editTask(note)">Edit</button>
                     <button @click="deleteTask(note.TaskId)">Delete</button>
@@ -25,9 +27,17 @@
             </tr>
             </tbody>
         </table>
+        <div>
+            <input type="text" id="newTaskInput" v-model="newTaskTitle" placeholder="Enter task title">
+            <input type="text" id="newTaskInput" v-model="newTaskContent" placeholder="Enter task description">
+            <input type="text" id="newTaskInput" v-model="newTaskColor" placeholder="Enter task color">
+            <input type="text" id="newTaskInput" v-model="newTaskProgress" placeholder="Enter task progress">
+            <input type="text" id="newTaskInput" v-model="newTaskPriority" placeholder="Enter task priority">
+            <button @click="addTask">Add task</button>
+        </div>
+
     </div>
 </template>
-
 <script>
 import axios from "axios";
 const API_URL = "http://localhost:5038/";
@@ -36,6 +46,11 @@ export default {
     name: "AppOwnerDashboard",
     data() {
         return {
+            newTaskTitle: '',
+            newTaskContent: '',
+            newTaskColor: '',
+            newTaskProgress: '',
+            newTaskPriority: '',
             notes: []
         };
     },
@@ -74,6 +89,32 @@ export default {
                 console.error(error)
             }
 
+        },
+        addTask() {
+            console.log("adding task");
+            try {
+                axios.post(API_URL + "api/examenportfolio/add-notes", {
+                    TaskTitle: this.newTaskTitle,
+                    TaskContent: this.newTaskContent,
+                    TaskColor: this.newTaskColor,
+                    TaskProgress: this.newTaskProgress,
+                    TaskPriority: this.newTaskPriority
+                })
+                    .then(response => {
+                        console.log(response.data);
+                        this.newTaskTitle = '';
+                        this.newTaskContent = '';
+                        this.newTaskColor = '';
+                        this.newTaskProgress = '';
+                        this.newTaskPriority = '';
+                        this.refreshData();
+                    })
+                    .catch(error => {
+                        console.error('Error adding notes:', error);
+                    });
+            } catch (error) {
+                console.error(error);
+            }
         }
     }
 };
@@ -81,9 +122,10 @@ export default {
 
 <style scoped>
 /* Add your table styling here */
-.table-container {
+.ownerpage-container {
     margin: 20px auto;
     max-width: 1120px;
+    height:auto;
 }
 
 table {

@@ -45,20 +45,24 @@ app.get("/api/examenportfolio/get-notes", async (request, response) => {
 
 app.post("/api/examenportfolio/add-notes", async (request, response) => {
     // console.log(request.body.newNotes);
-    console.log("Before countDocuments call");
+    // console.log("Before countDocuments call");
     try {
         const count = await database.collection("examenportfoliocollection").countDocuments();
-        console.log(count);
+        // console.log(count);
         await database.collection("examenportfoliocollection").insertOne({
             TaskId: (parseInt(count) + 1),
-            TaskTitle: request.body.newNotes
+            TaskTitle: request.body.TaskTitle,
+            TaskContent: request.body.TaskContent,
+            TaskColor: request.body.TaskColor,
+            TaskProgress: request.body.TaskProgress,
+            TaskPriority: request.body.TaskPriority
         });
         response.json("Added Successfully");
     } catch (error) {
         console.error("Error:", error);
         response.status(500).send("Internal Server Error");
     }
-    console.log("After countDocuments call");
+    // console.log("After countDocuments call");
 });
 
 app.delete('/api/examenportfolio/delete-notes', async (request, response) => {
@@ -95,6 +99,7 @@ app.put('/api/examenportfolio/login', async (request, response) => {
         const result = await database.collection("examenportfoliousercollection").findOne( { UserEmail: request.body.email } );
         console.log(result);
         if (atob(result.UserPassword) !== request.body.password) {
+            console.log(atob(result.UserPassword));
             response.json({"statusmessage": "error", "message": "password is incorrect"});
         }
         response.json({"statusmessage": "success", "message": "success", "UserRole" : result.UserRole});
