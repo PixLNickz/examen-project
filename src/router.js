@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Homepage from './components/AppHomepage.vue';
+import Homepage from './pages/AppHomepage.vue';
 import AdminDashboard from "./pages/AppAdminDashboard.vue";
 import OwnerDashboard from "./pages/AppOwnerDashboard.vue";
 import LoginRegister from "./pages/AppLoginRegister.vue";

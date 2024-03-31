@@ -1,5 +1,7 @@
 <template>
+
     <div class="ownerpage-container">
+        <h1 class="title">Owner's Dashboard</h1>
         <table>
             <thead>
             <tr>
@@ -77,12 +79,23 @@ export default {
             newTaskColor: '#FFFFFF',
             newTaskPriority: '',
             tasks: [],
-            accounts: []
+            accounts: [],
+            role: null
         };
     },
     mounted() {
-        this.refreshData();
-        this.getAccounts();
+        if (localStorage.getItem("role")) {
+            this.role = atob(localStorage.getItem("role"));
+        }
+        if (this.role === "owner") {
+            this.refreshData();
+            this.getAccounts();
+        } else {
+            alert("Sorry, you dont have access to this page");
+            this.$router.push({
+                path: '/'
+            });
+        }
     },
     methods: {
         async refreshData() {
@@ -151,27 +164,33 @@ export default {
             }
         },
         addTask() {
-            console.log("adding task");
-            try {
-                axios.post(API_URL + "api/examenportfolio/add-notes", {
-                    TaskTitle: this.newTaskTitle,
-                    TaskContent: this.newTaskContent,
-                    TaskColor: this.newTaskColor,
-                    TaskPriority: this.newTaskPriority
-                })
-                    .then(response => {
-                        console.log(response.data);
-                        this.newTaskTitle = '';
-                        this.newTaskContent = '';
-                        this.newTaskColor = '#FFFFFF';
-                        this.newTaskPriority = '';
-                        this.refreshData();
+            if (this.role === "owner") {
+                try {
+                    axios.post(API_URL + "api/examenportfolio/add-notes", {
+                        TaskTitle: this.newTaskTitle,
+                        TaskContent: this.newTaskContent,
+                        TaskColor: this.newTaskColor,
+                        TaskPriority: this.newTaskPriority
                     })
-                    .catch(error => {
-                        console.error('Error adding notes:', error);
-                    });
-            } catch (error) {
-                console.error(error);
+                        .then(response => {
+                            console.log(response.data);
+                            this.newTaskTitle = '';
+                            this.newTaskContent = '';
+                            this.newTaskColor = '#FFFFFF';
+                            this.newTaskPriority = '';
+                            this.refreshData();
+                        })
+                        .catch(error => {
+                            console.error('Error adding notes:', error);
+                        });
+                } catch (error) {
+                    console.error(error);
+                }
+            } else {
+                alert("Sorry, you dont have access to this page");
+                this.$router.push({
+                    path: '/'
+                });
             }
         }
     }

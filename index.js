@@ -79,9 +79,8 @@ app.delete('/api/examenportfolio/delete-notes', async (request, response) => {
 app.put('/api/examenportfolio/edit-notes', async (request, response) => {
     try {
         const { _id, TaskList } = request.body;
-
         await database.collection("examenportfoliocollection").updateOne(
-            { _id: _id },
+            { _id: new ObjectId(_id) },
             { $set: { TaskList: TaskList } }
         );
         response.json("Task edited successfully");
@@ -95,7 +94,6 @@ app.put('/api/examenportfolio/edit-notes', async (request, response) => {
 app.get("/api/examenportfolio/get-accounts", async (request, response) => {
     try {
         const result = await database.collection("examenportfoliousercollection").find({}, { projection: { _id: 1, UserEmail: 1, UserRole: 1 } }).toArray();
-        // console.log(result);
         response.send(result);
     } catch (error) {
         console.error("Error fetching accounts:", error);

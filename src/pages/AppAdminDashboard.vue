@@ -1,6 +1,6 @@
 <template>
     <div class="homepage">
-        <h1 class="title">Titel lijst</h1>
+        <h1 class="title">Admin's Dashboard</h1>
 
         <div class="rectangle-container">
             <div class="rectangle-item">
@@ -48,6 +48,8 @@
 <script>
 import ListComponent from "@/components/AppListComponent.vue";
 import axios from 'axios';
+
+
 axios.defaults.headers.common = {
     "Content-Type": "application/json"
 }
@@ -79,14 +81,14 @@ export default {
             if (this.role === "admin" || this.role === "owner") {
                 event.dataTransfer.dropEffect = 'move';
                 event.dataTransfer.effectAllowed = 'move';
-                event.dataTransfer.setData('taskID', task.TaskId);
+                event.dataTransfer.setData('taskID', task._id);
             } else {
                 alert("Sorry you are not allowed to drag items.");
             }
         },
         onDrop(event, list) {
             const taskID = event.dataTransfer.getData('taskID');
-            const task = this.notes.find((task) => task._id === parseInt(taskID));
+            const task = this.notes.find((task) => task._id === taskID);
             if (task) {
                 axios.put(API_URL + "api/examenportfolio/edit-notes", { _id: task._id, TaskList: list })
                     .then(response => {
@@ -105,7 +107,14 @@ export default {
         if (localStorage.getItem("role")) {
             this.role = atob(localStorage.getItem("role"));
         }
-        this.refreshData();
+        if (this.role === "admin" || this.role === "owner") {
+            this.refreshData();
+        } else {
+            alert("Sorry, you dont have access to this page");
+            this.$router.push({
+                path: '/'
+            });
+        }
     },
     computed: {
         getListOne() {

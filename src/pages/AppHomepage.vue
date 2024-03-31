@@ -1,6 +1,6 @@
 <template>
     <div class="homepage">
-        <h1 class="title">Titel lijst</h1>
+        <h1 class="title">Draobksat taskboard</h1>
 
         <div class="rectangle-container">
             <div class="rectangle-item">
@@ -39,13 +39,6 @@
                 </div>
             </div>
         </div>
-        <div>
-            <form>
-                <!-- other form elements -->
-                <input type="text" id="newNotesInput" v-model="newNotes" placeholder="Enter notes">
-                <button type="button" id="submitButton" @click="addNotes">Submit</button>
-            </form>
-        </div>
     </div>
 </template>
 
@@ -83,17 +76,6 @@ export default {
             } catch (error) {
                 console.error("Error fetching notes:", error);
             }
-        },
-        addNotes() {
-            // send request
-            axios.post(API_URL + "api/examenportfolio/add-notes", { newNotes: this.newNotes })
-                .then(response => {
-                    console.log(response.data);
-                    this.newNotes = '';
-                })
-                .catch(error => {
-                    console.error('Error adding notes:', error);
-                });
         }
     },
     mounted() {
