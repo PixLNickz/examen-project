@@ -63,6 +63,7 @@ export default {
         return {
             newNotes: '',
             notes: [],
+            role: null
         }
     },
     methods: {
@@ -75,9 +76,13 @@ export default {
             }
         },
         startDrag(event, task) {
-            event.dataTransfer.dropEffect = 'move';
-            event.dataTransfer.effectAllowed = 'move';
-            event.dataTransfer.setData('taskID', task.TaskId)
+            if (this.role === "admin" || this.role === "owner") {
+                event.dataTransfer.dropEffect = 'move';
+                event.dataTransfer.effectAllowed = 'move';
+                event.dataTransfer.setData('taskID', task.TaskId);
+            } else {
+                alert("Sorry you are not allowed to drag items.");
+            }
         },
         onDrop(event, list) {
             const taskID = event.dataTransfer.getData('taskID');
@@ -97,8 +102,10 @@ export default {
         }
     },
     mounted() {
+        if (localStorage.getItem("role")) {
+            this.role = atob(localStorage.getItem("role"));
+        }
         this.refreshData();
-        // console.log(this.notes);
     },
     computed: {
         getListOne() {

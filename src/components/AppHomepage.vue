@@ -45,7 +45,6 @@
                 <input type="text" id="newNotesInput" v-model="newNotes" placeholder="Enter notes">
                 <button type="button" id="submitButton" @click="addNotes">Submit</button>
             </form>
-
         </div>
     </div>
 </template>
@@ -70,7 +69,8 @@ export default {
     data() {
         return {
             newNotes: '',
-            notes: []
+            notes: [],
+            role: null,
         }
     },
     methods: {
@@ -97,8 +97,10 @@ export default {
         }
     },
     mounted() {
+        if (this.$route.query.role) {
+            this.role = atob(this.$route.query.role);
+        }
         this.refreshData();
-        // console.log(this.notes);
     },
     computed: {
         getListOne() {

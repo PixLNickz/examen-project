@@ -30,7 +30,7 @@
                     <div class="navbar-end">
                         <router-link to="/admin-dashboard">Dashboard</router-link>
                         <a href="#">Owner's dashboard</a>
-                        <a href="#">Login</a>
+                        <router-link to="/login-register">Login</router-link>
                     </div>
                 </div>
             </div>

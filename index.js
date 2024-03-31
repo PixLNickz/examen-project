@@ -1,7 +1,6 @@
 const express = require("express");
 const MongoClient = require("mongodb").MongoClient;
 const cors = require("cors");
-const {ObjectId} = require("mongodb");
 
 const app = express();
 
@@ -77,7 +76,7 @@ app.delete('/api/examenportfolio/delete-notes', (request, response) => {
 
 app.put('/api/examenportfolio/edit-notes', async (request, response) => {
     try {
-        const {TaskId, TaskList} = request.body;
+        const { TaskId, TaskList } = request.body;
 
         await database.collection("examenportfoliocollection").updateOne(
             { TaskId: TaskId },
@@ -86,7 +85,38 @@ app.put('/api/examenportfolio/edit-notes', async (request, response) => {
         response.json("Task edited successfully");
         console.log("Task edited successfully");
     } catch (error) {
-
+        console.error("Error:", error);
     }
 
+});
+
+app.put('/api/examenportfolio/login', async (request, response) => {
+    try {
+        const result = await database.collection("examenportfoliousercollection").findOne( { UserEmail: request.body.email } );
+        console.log(result);
+        if (atob(result.UserPassword) !== request.body.password) {
+            response.json({"statusmessage": "error", "message": "password is incorrect"});
+        }
+        response.json({"statusmessage": "success", "message": "success", "UserRole" : result.UserRole});
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+});
+
+app.post('/api/examenportfolio/signup', async (request, response) => {
+    try {
+        // Encrypt password
+        let encryptedPassword = btoa(request.body.password);
+
+        const count = await database.collection("examenportfoliousercollection").countDocuments();
+        await database.collection("examenportfoliousercollection").insertOne({
+            UserId: (parseInt(count) + 1),
+            UserEmail: request.body.email,
+            UserPassword: encryptedPassword,
+            UserRole: "user"
+        });
+        response.json("Added Successfully");
+    } catch (error) {
+        console.log("Error: ", error)
+    }
 });
