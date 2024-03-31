@@ -29,7 +29,7 @@
                 <div class="menu-dropdown" :class="{ 'is-active': isMenuOpen }">
                     <div class="navbar-end">
                         <router-link to="/admin-dashboard">Dashboard</router-link>
-                        <a href="#">Owner's dashboard</a>
+                        <router-link to="/owner-dashboard">Owner's Dashboard</router-link>
                         <router-link to="/login-register">Login</router-link>
                     </div>
                 </div>
