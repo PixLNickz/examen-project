@@ -23,19 +23,19 @@
         <div class="rectangle-list-container">
             <div class="list-container">
                 <div class="rectangle-list">
-                    <ListComponent v-for="note in getListOne" :key="note.id" :title="note.TaskTitle" :color="note.TaskColor"/>
+                    <ListComponent v-for="note in getListOne" :key="note.id" :title="note.TaskTitle" :color="note.TaskColor" :content="note.TaskContent" :priority="note.TaskPriority" />
                 </div>
 
                 <div class="list-divider"></div>
 
                 <div class="rectangle-list">
-                    <ListComponent v-for="note in getListTwo" :key="note.id" :title="note.TaskTitle" :color="note.TaskColor"/>
+                    <ListComponent v-for="note in getListTwo" :key="note.id" :title="note.TaskTitle" :color="note.TaskColor" :content="note.TaskContent" :priority="note.TaskPriority" />
                 </div>
 
                 <div class="list-divider"></div>
 
                 <div class="rectangle-list">
-                    <ListComponent v-for="note in getListThree" :key="note.id" :title="note.TaskTitle" :color="note.TaskColor"/>
+                    <ListComponent v-for="note in getListThree" :key="note.id" :title="note.TaskTitle" :color="note.TaskColor" :content="note.TaskContent" :priority="note.TaskPriority"/>
                 </div>
             </div>
         </div>
