@@ -4,38 +4,64 @@
             <thead>
             <tr>
                 <th>_id</th>
-                <th>TaskId</th>
                 <th>TaskContent</th>
                 <th>TaskTitle</th>
-                <th>TaskProgress</th>
                 <th>TaskPriority</th>
-                <th>Actions</th> <!-- New column for actions -->
+                <th>Actions</th>
             </tr>
             </thead>
             <tbody>
-            <tr v-for="note in notes" :key="note.id">
-                <td>{{ note._id }}</td>
-                <td>{{ note.TaskId }}</td>
-                <td>{{ note.TaskContent }}</td>
-                <td>{{ note.TaskTitle }}</td>
-                <td>{{ note.TaskProgress }}</td>
-                <td>{{ note.TaskPriority }}</td>
-                <td>
-                    <button @click="editTask(note)">Edit</button>
-                    <button @click="deleteTask(note.TaskId)">Delete</button>
+            <tr v-for="task in tasks" :key="task.id">
+                <td>{{ task._id }}</td>
+                <td>{{ task.TaskContent }}</td>
+                <td>{{ task.TaskTitle }}</td>
+                <td>{{ task.TaskPriority }}</td>
+                <td class="end-column">
+                    <button class="table-button" @click="deleteTask(task._id)">Delete task</button>
                 </td>
             </tr>
             </tbody>
         </table>
-        <div>
-            <input type="text" id="newTaskInput" v-model="newTaskTitle" placeholder="Enter task title">
-            <input type="text" id="newTaskInput" v-model="newTaskContent" placeholder="Enter task description">
-            <input type="text" id="newTaskInput" v-model="newTaskColor" placeholder="Enter task color">
-            <input type="text" id="newTaskInput" v-model="newTaskProgress" placeholder="Enter task progress">
-            <input type="text" id="newTaskInput" v-model="newTaskPriority" placeholder="Enter task priority">
-            <button @click="addTask">Add task</button>
+        <div class="add-task-form">
+            <div class="form-group">
+                <label for="taskTitle">Task Title:</label>
+                <input type="text" id="taskTitle" v-model="newTaskTitle" class="task-input">
+            </div>
+            <div class="form-group">
+                <label for="taskContent">Task Description:</label>
+                <input type="text" id="taskContent" v-model="newTaskContent" class="task-input">
+            </div>
+            <div class="form-group">
+                <label for="taskColor">Task Color:</label>
+                <input type="color" v-model="newTaskColor">
+            </div>
+            <div class="form-group">
+                <label for="taskPriority">Task Priority:</label>
+                <input type="text" id="taskPriority" v-model="newTaskPriority" class="task-input">
+            </div>
+            <button @click="addTask" class="add-task-btn">Add task</button>
         </div>
-
+        <table>
+            <thead>
+            <tr>
+                <th>_id</th>
+                <th>UserEmail</th>
+                <th>UserRole</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="user in accounts" :key="user.id">
+                <td>{{ user._id }}</td>
+                <td>{{ user.UserEmail }}</td>
+                <td>{{ user.UserRole }}</td>
+                <td class="end-column">
+                    <button class="table-button" @click="changeRole(user._id)">Change user role</button>
+                    <button class="table-button" @click="deleteUser(user._id)">Delete user</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </template>
 <script>
@@ -48,14 +74,15 @@ export default {
         return {
             newTaskTitle: '',
             newTaskContent: '',
-            newTaskColor: '',
-            newTaskProgress: '',
+            newTaskColor: '#FFFFFF',
             newTaskPriority: '',
-            notes: []
+            tasks: [],
+            accounts: []
         };
     },
     mounted() {
         this.refreshData();
+        this.getAccounts();
     },
     methods: {
         async refreshData() {
@@ -63,32 +90,65 @@ export default {
                 const response = await axios.get(
                     API_URL + "api/examenportfolio/get-notes"
                 );
-                this.notes = response.data;
+                this.tasks = response.data;
             } catch (error) {
                 console.error("Error fetching notes:", error);
             }
         },
-        editTask(task) {
-            // Logic for editing the item
-            console.log("Editing item:", task);
+        async getAccounts() {
+            try {
+                const response = await axios.get(API_URL + "api/examenportfolio/get-accounts");
+                this.accounts = response.data;
+            } catch (error) {
+                console.error("Error fetching accounts:" + error);
+            }
+        },
+        changeRole(userId) {
+            try {
+                axios.put(API_URL + "api/examenportfolio/change-role", { _id: userId })
+                    .then(response => {
+                        console.log(response.data);
+                        this.getAccounts();
+                    })
+                    .catch(error => {
+                        console.error('Error changing role:', error);
+                    });
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async deleteUser(userId) {
+            // Logic for deleting the item
+            console.log("Deleting user with ID:", userId);
+            try {
+                axios.delete(API_URL + "api/examenportfolio/delete-user", { data: { _id: userId }})
+                    .then(response => {
+                        console.log(response.data);
+                        this.refreshData();
+                    })
+                    .catch(error => {
+                        console.error('Error removing user:', error);
+                    });
+            } catch (error) {
+                console.error(error);
+            }
 
         },
         async deleteTask(taskId) {
             // Logic for deleting the item
             console.log("Deleting item with ID:", taskId);
             try {
-                axios.delete(API_URL + "api/examenportfolio/delete-notes", { data: { TaskId: taskId }})
+                axios.delete(API_URL + "api/examenportfolio/delete-notes", { data: { _id: taskId }})
                     .then(response => {
                         console.log(response.data);
                         this.refreshData();
                     })
                     .catch(error => {
-                        console.error('Error adding notes:', error);
+                        console.error('Error removing task:', error);
                     });
             } catch (error) {
                 console.error(error)
             }
-
         },
         addTask() {
             console.log("adding task");
@@ -97,15 +157,13 @@ export default {
                     TaskTitle: this.newTaskTitle,
                     TaskContent: this.newTaskContent,
                     TaskColor: this.newTaskColor,
-                    TaskProgress: this.newTaskProgress,
                     TaskPriority: this.newTaskPriority
                 })
                     .then(response => {
                         console.log(response.data);
                         this.newTaskTitle = '';
                         this.newTaskContent = '';
-                        this.newTaskColor = '';
-                        this.newTaskProgress = '';
+                        this.newTaskColor = '#FFFFFF';
                         this.newTaskPriority = '';
                         this.refreshData();
                     })
@@ -121,7 +179,6 @@ export default {
 </script>
 
 <style scoped>
-/* Add your table styling here */
 .ownerpage-container {
     margin: 20px auto;
     max-width: 1120px;
@@ -129,6 +186,7 @@ export default {
 }
 
 table {
+    margin-top: 20px;
     border-collapse: collapse;
     width: 100%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -153,5 +211,46 @@ tbody tr:nth-child(even) {
 
 tbody tr:hover {
     background-color: #f1f1f1;
+}
+
+.end-column {
+    text-align: end;
+}
+
+.add-task-form {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.task-input {
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.table-button {
+    margin-left: 5px;
+    margin-right: 5px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.add-task-btn {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.add-task-btn:hover {
+    background-color: #0056b3;
 }
 </style>

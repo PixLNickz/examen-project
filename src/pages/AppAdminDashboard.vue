@@ -86,9 +86,9 @@ export default {
         },
         onDrop(event, list) {
             const taskID = event.dataTransfer.getData('taskID');
-            const task = this.notes.find((task) => task.TaskId === parseInt(taskID));
+            const task = this.notes.find((task) => task._id === parseInt(taskID));
             if (task) {
-                axios.put(API_URL + "api/examenportfolio/edit-notes", { TaskId: task.TaskId, TaskList: list })
+                axios.put(API_URL + "api/examenportfolio/edit-notes", { _id: task._id, TaskList: list })
                     .then(response => {
                         console.log(response.data);
                         this.refreshData();
