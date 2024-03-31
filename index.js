@@ -61,17 +61,17 @@ app.post("/api/examenportfolio/add-notes", async (request, response) => {
     console.log("After countDocuments call");
 });
 
-app.delete('/api/examenportfolio/delete-notes', (request, response) => {
-    database.collection("examenportfoliocollection").deleteOne({
-        id: request.query.id
-    }, (error, result) => {
-        if (error) {
-            console.error("Error deleting note:", error);
-            response.status(500).send("Internal Server Error");
-        } else {
-            response.json("Deleted Successfully");
-        }
-    });
+app.delete('/api/examenportfolio/delete-notes', async (request, response) => {
+    // console.log(request.body.TaskId);
+    try {
+        await database.collection("examenportfoliocollection").deleteOne({
+            TaskId: request.body.TaskId
+        });
+        response.json("Deleted Successfully");
+    } catch (error) {
+        console.error(error);
+    }
+
 });
 
 app.put('/api/examenportfolio/edit-notes', async (request, response) => {

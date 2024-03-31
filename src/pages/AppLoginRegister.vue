@@ -60,8 +60,8 @@ export default {
                     .then(response => {
                         console.log(response);
                     });
-            } catch (e) {
-                console.log(e);
+            } catch (error) {
+                console.error(error);
             }
         }
     }

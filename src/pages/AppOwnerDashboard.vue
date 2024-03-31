@@ -56,10 +56,24 @@ export default {
         editTask(task) {
             // Logic for editing the item
             console.log("Editing item:", task);
+
         },
-        deleteTask(taskId) {
+        async deleteTask(taskId) {
             // Logic for deleting the item
             console.log("Deleting item with ID:", taskId);
+            try {
+                axios.delete(API_URL + "api/examenportfolio/delete-notes", { data: { TaskId: taskId }})
+                    .then(response => {
+                        console.log(response.data);
+                        this.refreshData();
+                    })
+                    .catch(error => {
+                        console.error('Error adding notes:', error);
+                    });
+            } catch (error) {
+                console.error(error)
+            }
+
         }
     }
 };
