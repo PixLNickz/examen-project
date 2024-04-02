@@ -68,20 +68,16 @@ export default {
     },
     methods: {
         async refreshData() {
+            // Calls API to get data of notes from database
             try {
                 const response = await axios.get(API_URL + "api/examenportfolio/get-notes");
                 this.notes = response.data;
-                // console.log(response.data);
-                // console.log(response);
             } catch (error) {
                 console.error("Error fetching notes:", error);
             }
         }
     },
     mounted() {
-        if (this.$route.query.role) {
-            this.role = atob(this.$route.query.role);
-        }
         this.refreshData();
     },
     computed: {

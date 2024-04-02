@@ -26,11 +26,10 @@ export default {
     },
     methods: {
         async refreshData() {
+            // Calls API to get data of notes from database
             try {
                 const response = await axios.get(API_URL + "api/examenportfolio/get-notes");
                 this.notes = response.data;
-                // console.log(response.data);
-                // console.log(response);
             } catch (error) {
                 console.error("Error fetching notes:", error);
             }
@@ -44,8 +43,7 @@ export default {
 
 <style>
 .page-container {
-    /* Set minimum height to occupy full screen */
-    min-height: calc(100vh - 34px); /* Adjust as needed */
-    /* Assuming the footer has a height of 100px */
+    /* -34px because footer is 34px tall */
+    min-height: calc(100vh - 34px);
 }
 </style>

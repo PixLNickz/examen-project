@@ -70,6 +70,7 @@ export default {
     },
     methods: {
         async refreshData() {
+            // Calls API to get data of notes from database
             try {
                 const response = await axios.get(API_URL + "api/examenportfolio/get-notes");
                 this.notes = response.data;
@@ -78,6 +79,7 @@ export default {
             }
         },
         startDrag(event, task) {
+            // Check if allowed role
             if (this.role === "admin" || this.role === "owner") {
                 event.dataTransfer.dropEffect = 'move';
                 event.dataTransfer.effectAllowed = 'move';
@@ -87,6 +89,7 @@ export default {
             }
         },
         onDrop(event, list) {
+            // On dropping a task, send API call to change tasklist of task with given ID to desired list
             const taskID = event.dataTransfer.getData('taskID');
             const task = this.notes.find((task) => task._id === taskID);
             if (task) {
@@ -104,9 +107,11 @@ export default {
         }
     },
     mounted() {
+        // Decrypt role from localstorage
         if (localStorage.getItem("role")) {
             this.role = atob(localStorage.getItem("role"));
         }
+        // Check if allowed role
         if (this.role === "admin" || this.role === "owner") {
             this.refreshData();
         } else {
@@ -117,6 +122,7 @@ export default {
         }
     },
     computed: {
+        // Filter depending on what list the note/task is in
         getListOne() {
             return this.notes.filter((note)=>note.TaskList === 1)
         },

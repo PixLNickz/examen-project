@@ -84,9 +84,11 @@ export default {
         };
     },
     mounted() {
+        // Decrypt role from localstorage
         if (localStorage.getItem("role")) {
             this.role = atob(localStorage.getItem("role"));
         }
+        // Check if allowed role
         if (this.role === "owner") {
             this.refreshData();
             this.getAccounts();
@@ -99,6 +101,7 @@ export default {
     },
     methods: {
         async refreshData() {
+            // Calls API to get data of notes from database
             try {
                 const response = await axios.get(
                     API_URL + "api/examenportfolio/get-notes"
@@ -109,6 +112,7 @@ export default {
             }
         },
         async getAccounts() {
+            // Calls API to get data of accounts from database
             try {
                 const response = await axios.get(API_URL + "api/examenportfolio/get-accounts");
                 this.accounts = response.data;
@@ -117,6 +121,7 @@ export default {
             }
         },
         changeRole(userId) {
+            // Calling API to change account role depending on which role it has at the moment
             try {
                 axios.put(API_URL + "api/examenportfolio/change-role", { _id: userId })
                     .then(response => {
@@ -131,7 +136,7 @@ export default {
             }
         },
         async deleteUser(userId) {
-            // Logic for deleting the item
+            // Calling API to delete user with given userId
             console.log("Deleting user with ID:", userId);
             try {
                 axios.delete(API_URL + "api/examenportfolio/delete-user", { data: { _id: userId }})
@@ -148,7 +153,7 @@ export default {
 
         },
         async deleteTask(taskId) {
-            // Logic for deleting the item
+            // Calling API to delete task with given taskId
             console.log("Deleting item with ID:", taskId);
             try {
                 axios.delete(API_URL + "api/examenportfolio/delete-notes", { data: { _id: taskId }})
@@ -164,6 +169,7 @@ export default {
             }
         },
         addTask() {
+            // Calling API to add task with given data if owner
             if (this.role === "owner") {
                 try {
                     axios.post(API_URL + "api/examenportfolio/add-notes", {
@@ -198,78 +204,5 @@ export default {
 </script>
 
 <style scoped>
-.ownerpage-container {
-    margin: 20px auto;
-    max-width: 1120px;
-    height:auto;
-}
 
-table {
-    margin-top: 20px;
-    border-collapse: collapse;
-    width: 100%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-}
-
-th,
-td {
-    border: 1px solid #ddd;
-    padding: 12px;
-    text-align: left;
-}
-
-th {
-    background-color: #f2f2f2;
-    font-weight: bold;
-}
-
-tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-tbody tr:hover {
-    background-color: #f1f1f1;
-}
-
-.end-column {
-    text-align: end;
-}
-
-.add-task-form {
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.task-input {
-    padding: 10px;
-    margin-right: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-.table-button {
-    margin-left: 5px;
-    margin-right: 5px;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.add-task-btn {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.add-task-btn:hover {
-    background-color: #0056b3;
-}
 </style>

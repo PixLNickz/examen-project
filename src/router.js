@@ -4,6 +4,7 @@ import AdminDashboard from "./pages/AppAdminDashboard.vue";
 import OwnerDashboard from "./pages/AppOwnerDashboard.vue";
 import LoginRegister from "./pages/AppLoginRegister.vue";
 
+// Routes to all pages
 const routes = [
     { path: '/', component: Homepage },
     { path: '/admin-dashboard', component: AdminDashboard },

@@ -19,13 +19,11 @@
                 </router-link>
             </div>
             <div class="navbar-menu">
-                <!-- Hamburger Icon -->
                 <div class="hamburger-menu" @click="toggleMenu">
                     <div class="bar"></div>
                     <div class="bar"></div>
                     <div class="bar"></div>
                 </div>
-                <!-- Menu Items -->
                 <div class="menu-dropdown" :class="{ 'is-active': isMenuOpen }">
                     <div class="navbar-end">
                         <router-link to="/admin-dashboard">Dashboard</router-link>

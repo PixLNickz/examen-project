@@ -3,7 +3,6 @@ const MongoClient = require("mongodb").MongoClient;
 const cors = require("cors");
 const { ObjectId } = require('mongodb');
 
-
 const app = express();
 
 app.use(cors());
@@ -13,6 +12,7 @@ const CONNECTION_STRING = "mongodb://localhost:27017/examenportfolio";
 const DATABASE_NAME = "examenportfoliodb";
 let database;
 
+// Database connection check
 app.listen(5038, () => {
     console.log("Server listening on port 5038");
 
@@ -21,7 +21,6 @@ app.listen(5038, () => {
             console.log("Mongo DB Connection Successful");
             database = client.db(DATABASE_NAME);
 
-            // Check MongoDB connection status after connection is established
             app.get("/check-connection", (req, res) => {
                 if (database) {
                     res.status(200).json({ message: "MongoDB connection is established" });
@@ -35,6 +34,7 @@ app.listen(5038, () => {
         });
 });
 
+// Get notes/tasks from database
 app.get("/api/examenportfolio/get-notes", async (request, response) => {
     try {
         const result = await database.collection("examenportfoliocollection").find({}).toArray();
@@ -45,9 +45,8 @@ app.get("/api/examenportfolio/get-notes", async (request, response) => {
     }
 });
 
+// Add notes/tasks to database
 app.post("/api/examenportfolio/add-notes", async (request, response) => {
-    // console.log(request.body.newNotes);
-    // console.log("Before countDocuments call");
     try {
         await database.collection("examenportfoliocollection").insertOne({
             TaskTitle: request.body.TaskTitle,
@@ -61,9 +60,9 @@ app.post("/api/examenportfolio/add-notes", async (request, response) => {
         console.error("Error:", error);
         response.status(500).send("Internal Server Error");
     }
-    // console.log("After countDocuments call");
 });
 
+// Delete notes/tasks from database
 app.delete('/api/examenportfolio/delete-notes', async (request, response) => {
     try {
         await database.collection("examenportfoliocollection").deleteOne({
@@ -76,6 +75,7 @@ app.delete('/api/examenportfolio/delete-notes', async (request, response) => {
 
 });
 
+// Database calls for dragging notes/tasks to other lists
 app.put('/api/examenportfolio/edit-notes', async (request, response) => {
     try {
         const { _id, TaskList } = request.body;
@@ -91,6 +91,7 @@ app.put('/api/examenportfolio/edit-notes', async (request, response) => {
 
 });
 
+// Get accounts from database
 app.get("/api/examenportfolio/get-accounts", async (request, response) => {
     try {
         const result = await database.collection("examenportfoliousercollection").find({}, { projection: { _id: 1, UserEmail: 1, UserRole: 1 } }).toArray();
@@ -101,6 +102,7 @@ app.get("/api/examenportfolio/get-accounts", async (request, response) => {
     }
 });
 
+// Database checks if password and email are correct, sends back logged in with encrypted role
 app.put('/api/examenportfolio/login', async (request, response) => {
     try {
         const result = await database.collection("examenportfoliousercollection").findOne( { UserEmail: request.body.email } );
@@ -115,6 +117,7 @@ app.put('/api/examenportfolio/login', async (request, response) => {
     }
 });
 
+// When called, add account to database with the correct input
 app.post('/api/examenportfolio/signup', async (request, response) => {
     try {
         // Encrypt password
@@ -131,6 +134,7 @@ app.post('/api/examenportfolio/signup', async (request, response) => {
     }
 });
 
+// Deletes account from database with given ID
 app.delete('/api/examenportfolio/delete-user', async (request, response) => {
     try {
         await database.collection("examenportfoliousercollection").deleteOne({
@@ -140,9 +144,9 @@ app.delete('/api/examenportfolio/delete-user', async (request, response) => {
     } catch (error) {
         console.error(error);
     }
-
 });
 
+// Changes role of account in database with given ID
 app.put('/api/examenportfolio/change-role', async (request, response) => {
     try {
         const result = await database.collection("examenportfoliousercollection").findOne({ _id: new ObjectId(request.body._id) });
@@ -151,7 +155,6 @@ app.put('/api/examenportfolio/change-role', async (request, response) => {
         } else {
             await database.collection("examenportfoliousercollection").updateOne({ _id: new ObjectId(request.body._id) }, {$set: { UserRole: 'user'}})
         }
-        console.log(result);
         response.json("Role Changed Successfully");
     } catch (error) {
         console.error(error);
